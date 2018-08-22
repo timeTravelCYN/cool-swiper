@@ -128,10 +128,128 @@
             let lastChild = _.wrapper.lastElementChild.cloneNode(true);
             _.wrapper.appendChild(firstChild)
             _.wrapper.insertBefore(lastChild, _.wrapper.firstElementChild)
-            _.setTrabsutuibDyratuib
+            _.setTransitionDuration(_.wrapper, 0);
+            _.currentIndex = 1;
+            _.moveTo(_.activeIndex + 1);
+          }
+        },
+        touchmove: function () {
+          if (_.params.direction === 'horizontal') {
+            _.setTransform(
+              _.wrapper,
+              'translate3d(' + (_.mouse.sx - _.params.width * _.currentIndex) + 'px, 0, 0)'
+            )
+          } else {
+            _.setTransform(
+              _.wrapper,
+              'translate3d(0, ' + (_.mouse.sy - _.params.height * _.currentIndex) + 'px, 0)'
+            )
+          }
+        },
+        touchend: function () {
+          if (_.params.direction === 'horizontal') {
+            _.effects.slide.move(_.mouse.sx)
+          } else if (_.params.direction === 'vertical') {
+            _.effects.slide.move(_.mouse.sy)
+          }
+        },
+        transitioned: function () {
+          if (_.params.loop) {
+            if (_.currentIndex === 0) {
+              _.activeIndex = _.totalLength - 1;
+              _.currentIndex = _.activeIndex + 1;
+              _.moveTo(_.activeIndex + 1)
+            } else if (_.currentIndex === _.totalLength + 1) {
+              _.activeIndex = 0;
+              _.currentIndex = _.activeIndex + 1;
+              _.moveTo(_.activeIndex + 1)
+            } else {
+              _.activeIndex = _.currentIndex - 1;
+            }
+          } else {
+            _.currentIndex = _.activeIndex
+          }
+
+          if (_.params.pagination) {
+            let bullets = _.pagination.querySelectorAll('.slide-slide-pagination-bullet')
+            Array.prototype.forEach.call(bullets, bullet => {
+              bullet.classList.remove('slide-pagination-bullet-active')
+            })
+            bullets[_.activeIndex].classList.add('slide-pagination-bullet-active')
+          }
+        },
+        move: function (offset) {
+          const isMove = Math.abs(offset) > _.params.distance
+          if (_.params.loop) {
+            if (offset < 0 && isMove) {
+              _.currentIndex++
+            } else if (offset > 0 && isMove) {
+              _.currentIndex--
+            }
+            _.moveTo(_.currentIndex)
+          } else {
+            if ()
           }
         }
       }
+    }
+
+    _.moveTo = function (index) {
+      if (_.params.direction === 'horizontal') {
+        _.setTransform(
+          _.wrapper,
+          'translate3d(-)' + _.params.width * index + 'px, 0, 0)'
+        )
+      } else if (_.params.direction === 'vertical') {
+        _.setTransform(
+          _.wrapper,
+          'translate3d(0, -' + _.params.height * index + 'px, 0)'
+        )
+      }
+    }
+
+    _.slideTo = function (index) {
+      if (_.lock) return;
+      _.lock = true;
+      _.stopInterval();
+      if (_.params.effect === 'slide') {
+        _.setTransitionDuration(_.wrapper, _.params.speed)
+        _.moveTo(index + 1)
+        _.activeIndex = _.currentIndex = index + 1
+      } else {
+        _.currentIndex = _.activeIndex;
+        _.activeIndex = index;
+        _.updateActiveIndex()
+        _.executeAnimate()
+      }
+    }
+
+    _.updateActiveIndex = function () {
+      if (_.activeIndex < 0) {
+        _.activeIndex = _.totalLength - 1;
+      } else {
+        _.activeIndex = _.activeIndex % _.totalLength
+      }
+    }
+
+    _.stopInterval = function () {
+      clearInterval(_.intervalId)
+      _.autoplaying = false;
+    }
+
+    _.setTransitionDuration = function (element, times) {
+      element.style.webkitTransitionDuration = times + 'ms'
+      element.style.mozTransitionDuration = times + 'ms'
+      element.style.oTransitionDuration = times + 'ms'
+      element.style.transitionDuration = times + 'ms'
+    }
+
+    _.setTransform = function (element, animation) {
+      element.style.webkitTransform = animation;
+      element.style.mozTransform = animation;
+      element.style.oTransform = animation;
+      element.style.msTransform = animation;
+      element.style.transform = animation
     }
 
     _.pageInit = () => {
