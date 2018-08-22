@@ -1,12 +1,64 @@
 <!DOCTYPE html>
 <html lang="en">
+
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <meta http-equiv="X-UA-Compatible" content="ie=edge">
   <title>Document</title>
+  <link rel="stylesheet" href="./dist/swiper.css">
+  <style>
+    html,
+    body {
+      width: 100%;
+      height: 100%
+    }
+
+    .slide img {
+      width: 100%;
+    }
+
+    .container {
+      background: #eee;
+      margin: 10px;
+      float: left;
+    }
+  </style>
 </head>
+
 <body>
-  
+  <div class="container slide-mode">
+    <div class="wrapper">
+      <div class="slide">
+        <img src="./assets/image-slider-1.jpg" alt="">
+      </div>
+      <div class="slide">
+        <img src="./assets/image-slider-2.jpg" alt="">
+      </div>
+      <div class="slide">
+        <img src="./assets/image-slider-3.jpg" alt="">
+      </div>
+      <div class="slide">
+        <img src="./assets/image-slider-4.jpg" alt="">
+      </div>
+      <div class="slide">
+        <img src="./assets/image-slider-5.jpg" alt="">
+      </div>
+    </div>
+    <div class="slide-pagination"></div>
+    <div class="slide-prev-button"></div>
+    <div class="slide-next-button"></div>
+  </div>
+  <script src="./dist/swiper.js"></script>
+  <script>
+    const width = 600;
+    const height = 248;
+    const mySlide = new Slide('.slide-mode', {
+      width: width,
+      height: height,
+      pagination: true
+    })
+  </script>
 </body>
+
 </html>
